@@ -44,4 +44,4 @@ https://developer.android.com/studio/index.html
 
 책에서는 brew 을 이용해 설치 했지만 deprecated 될것이기 때문에
 
-안드로이드 스튜디오를 설치한다.
+안드로이드 스튜디오를 설치 합니다.
