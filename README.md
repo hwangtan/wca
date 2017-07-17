@@ -40,11 +40,11 @@ WCA: We Create Application
 6장 | 플랫폼 API| 네비게이터| 5주 | ~|
 6장 | 플랫폼 API| 카메라| 5주 | ~|
 6장 | 플랫폼 API| 위치 기반 날씨앱| 5주 | 151page| 17.07.13
-7장 | 모듈| 모듈 코드 엿보기(iOS, Android, Cross)| 7주 ||
-8장 | 디버깅| flow, jest| 7주 ||
-9장 | 앱 통합| Reflux & flux, Async storage| 8주 ||
-9장 | 과제| 코드 리뷰| 9주 ||
-10~11장 | 배포| 플랫폼별 배포| 10주 ||
+7장 | 모듈| 모듈 코드 엿보기(iOS, Android, Cross)| 5주 ||
+8장 | 디버깅| flow, jest| 5주 ||
+9장 | 앱 통합| Reflux & flux, Async storage| 5주 || 17.07.16
+9장 | 과제| 코드 리뷰| 6주 ||
+10~11장 | 배포| 플랫폼별 배포| 7주 ||
 
 ### STEP2. RESTfulAPI (MAX: 3주)
 
