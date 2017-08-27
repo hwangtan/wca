@@ -1,34 +1,46 @@
 ## URI 형태
 
+팀 버너스리가 정의한 웹구조의 원칙에서 URI의 불명성에 대해서 설명한다.
+
+```
+식별자로 할 수 있는 유일한 일은 대상을 나타내는 것이다.
+역참조를 할 떄가 아니라면 다른 정보를 얻기 위해서 URI의 내용을 들여다보지 말아야 한다.
+```
+
+**RFC 3986 에서 정의한 URI 문법**
 ```
 URI = scheme “ :// ” authority “ / ” path [“ ? ” query] [“ # ” fragment ]
 ```
-1. **슬래시 구분자(/)는 계층 관계를 나타내는데 사용한다.**
+- **슬래시 구분자(/)는 계층 관계를 나타내는데 사용한다.**
 
-2. **포워드 슬래시(/)는 경로path 내에서 리소스 간의 계층 관계를 나타내는데 사용한다.** 
+- **포워드 슬래시(/)는 경로path 내에서 리소스 간의 계층 관계를 나타내는데 사용한다.** 
  `ex)http://api.canvas.restapi.org/shapes/polygons/quadrilaterals/squares`
+ 
+- **URI 마지막 문자로 슬래시(/)를 포함하지 않는다.**
+```
+URI 경로 마지막에 있는 슬래시는 아무런 의미가 없지만, 혼란을 초래할 수 있다.
+그러므로 REST API의 마지막 글자에 슬래시가 와서는 안 되고 클라이언트에 제공 하는 링크에도
+그런 API를 포함하면 안 된다. 많은 웹 컴포넌트와 프레임워크에서는 다음 두 URI를 같은 것으로 취급한다.
+ http://api.canvas.restapi.org/shapes/
+ http://api.canvas.restapi.org/shapes
+```
 
-3. **URI 마지막 문자로 슬래시(/)를 포함하지 않는다.**
-
-URI 경로 마지막에 있는 슬래시는 아무런 의미가 없지만, 혼란을 초래할 수 있다. 그러므로 REST API의 마지막 글자에 슬래시가 와서는 안 되고 클라이언트에 제공 하는 링크에도 그런 API를 포함하면 안 된다. 많은 웹 컴포넌트와 프레임워크에서는 다음 두 URI를 같은 것으로 취급한다.
- http://api.canvas.restapi.org/shapes/ http://api.canvas.restapi.org/shapes
-
-4. **하이픈(-)은 URI 가독성을 높이는 데 사용한다.**
+- **하이픈(-)은 URI 가독성을 높이는 데 사용한다.**
 
  URI를 쉽게 읽고 해석하기 위해, 긴 URI 경로에 하이픈을 사용해서 가독성을 높 인다. URI에서는 문장 내 공백을 하이픈으로 바꿀 수 있다.
 
-5. **밑줄( _ )은 URI에 사용하지 않는다.**
+- **밑줄( _ )은 URI에 사용하지 않는다.**
 
-6. **URI 경로에는 소문자가 적합하다.**
+- **URI 경로에는 소문자가 적합하다.**
 
  URI 경로에 대문자를 사용하면 문제가 될 수 있으므로 소문자를 사용한다. RFC 3986은 URI 스키마와 호스트를 제외하고는 대소문자를 구별하도록 규정한다. 예를 들면 다음과 같다.
 ```
-  http://api.example.restapi.org/my-folder/my-doc  (O)
-  HTTP://API.EXAMPLE.RESTAPI.ORG/my-folder/my-doc (confuse)
-  http://api.example.restapi.org/My-Folder/my-doc (confuse)
+  http://api.example.restapi.org/my-folder/my-doc (good)
+  HTTP://API.EXAMPLE.RESTAPI.ORG/my-folder/my-doc (bad)
+  http://api.example.restapi.org/My-Folder/my-doc (bad)
 ```
 
-7. **파일 확장자는 URI에 포함시키지 않는다.**
+- **파일 확장자는 URI에 포함시키지 않는다.**
 
 웹에서 점(.) 문자는 URI에서 파일 이름과 확장자를 구분하는 데 사용한다. 하지 만 REST API에서는 메시지 바디 내용의 포맷을 나타내기 위한 파일 확장자를 URI 안에 포함하지 않아도 된다. 대신 이 확장자는 미디어 타입에 의존하는데, Content-Type 헤더를 통해 전달되고 메시지 바디의 내용을 어떻게 처리할지 결정한다. 
 
@@ -46,6 +58,7 @@ http://developer.soccer.restapi.org
 URI 경로는 REST API의 리소스 모델을 다루는데, 포워드 슬래시(/)로 경로 구문 을 나눈다. 이 경로 구문은 리소스 모델 계층에서 유일한 리소스에 해당된다. 다음 예를 보자.
 http://api.soccer.restapi.org/leagues/seattle/teams/trebuchet
 이 URI 디자인은 다음과 같은 자체 리소스 주소를 가진 URI가 있다는 것을 뜻한다.
+
 ```
 http://api.soccer.restapi.org/leagues/seattle/teams
 http://api.soccer.restapi.org/leagues/seattle 
@@ -76,7 +89,7 @@ http://api.soccer.restapi.org/leagues/seattle/teams/trebuchet/players
 ```
 
 #### 스토어
-스토어는 클라이언트에서 관리하는 리소스 저장소다. 스토어 리소스는 API 클라이언트가 리소스를 넣거나 빼는 것, 지우는 것에 관여한다. 스토어 스스로 새로운 리소스를 생성하지 못하기 때문에, 새로운 URI를 만들지는 못한다. 대신 리소스는 스토어에 처음 저장될 때, 클라이언트가 선택한 URI를 가진다. 다음은 클라이언트 프로그램에서 ID가 1234인 사용자를 보여주고, 가상의 Soccer REST API를 사용 하여 favorites라는 스토어에 alonso라는 도큐먼트 리소스를 넣는 예다.
+스토어는 클라이언트에서 관리하는 리소스 저장소다. 스토어 리소스는 API 클라이언트가 리소스를 넣거나 빼는 것, 지우는 것에 관여한다. 스토어 스스로 새로운 리소스를 생성하지 못하기 때문에, 새로운 URI를 만들지는 못한다. 대신 리소스는 스토어에 처음 저장될 때, 클라이언트가 선택한 URI를 가진다.
 
 ### 컨트롤러
 컨트롤러 리소스는 절차적인 개념을 모델화한 것이다. 컨트롤러 리소스는 실행 가 능한 함수와 같아서 파라미터(입력 값)와 반환 값(출력 값)이 있다.
@@ -105,7 +118,7 @@ http://api.music.restapi.org/artists/mikemassedotcom/playlists
 http://api.college.restapi.org/students/morgan/register http://api.example.restapi.org/lists/4324/dedupe http://api.ognom.restapi.org/dbs/reindex http://api.build.restapi.org/qa/nightly/runTestSuite
 
 #### 경로 부분 중 변하는 부분은 유일한 값으로 대체한다
-URI 경로 부분은 REST API 디자이너가 정해준 이름만 사용하기도 하지만, 어떤 경로 부분은 변수처럼 변환하며 유일한 식별자로 자동적으로 채워지기도 한다. 디 자이너는 URI 템플릿 문법을 이용하여 변하지 않는 부분과 변하는 부분 모두를 명 확하게 설계할 수 있다. URI 템플릿02에 포함된 변수는 최종적으로 유일한 값으로 대체되어야 한다. 다음 템플릿 예는 변수를 세 개(leagueId, teamId, playerId) 가지고 있다.
+URI 경로 부분은 REST API 디자이너가 정해준 이름만 사용하기도 하지만, 어떤 경로 부분은 변수처럼 변환하며 유일한 식별자로 자동적으로 채워지기도 한다. 디자이너는 URI 템플릿 문법을 이용하여 변하지 않는 부분과 변하는 부분 모두를 명확하게 설계할 수 있다. URI 템플릿02에 포함된 변수는 최종적으로 유일한 값으로 대체되어야 한다. 다음 템플릿 예는 변수를 세 개(leagueId, teamId, playerId) 가지고 있다.
 http://api.soccer.restapi.org/leagues/{leagueId}/teams/{teamId}/players/{playerId}
 REST API 자체나 클라이언트가 URI 템플릿에 있는 변수를 실제 값으로 대체한다.
 대체되는 각 실제 값은 숫자나 알파벳으로 나타낸다. 다음 예를 보자.
@@ -115,30 +128,44 @@ REST API의 클라이언트에서는 URI가 하나의 유의미한 리소스 식
 
 #### CRUD 기능을 나타내는 것은 URI에 사용하지 않는다
 CRUD 기능을 수행하는 내용은 URI에 나타내지 않는다. URI는 리소스를 식별하는 데만 사용해야 하고, 위에서 설명한 내용을 바탕으로 설계되어야 한다.
-DELETE /users/1234
-다음 예는 사용해서는 안 되는 디자인이다.
-GET /deleteUser?id=1234 GET /deleteUser/1234 DELETE /deleteUser/1234 POST /users/1234/delete
-
+```
+DELETE /users/1234 //good
+GET /deleteUser?id=1234 //bad
+GET /deleteUser/1234 DELETE /deleteUser/1234  //bad
+POST /users/1234/delete //bad
+```
 
 ## URI Query 디자인
-이 부분에서는 URI 쿼리의 설계 규칙을 설명할 것이다. RFC 3986에서 URI 쿼리 는 선택사항이고 경로와 다른 선택사항인 프래그먼트fragment 사이에 온다.
+RFC 3986에서 URI 쿼리 는 선택사항이고 경로와 다른 선택사항인 프래그먼트fragment 사이에 온다.
+
 `URI = scheme “://” authority “/” path [ “?” query ] [ “#” fragment ]`
-URI 구성요소인 쿼리는 유일한 리소스를 식별하는 데 도움을 준다. 다음 예를 보자.
-http://api.college.restapi.org/students/morgan/send-sms 
-http://api.college.restapi.org/students/morgan/send-sms?text=hello
+
+URI 구성요소인 쿼리는 유일한 리소스를 식별하는 데 도움을 준다.
+```
+1. http://api.college.restapi.org/students/morgan/send-sms 
+2. http://api.college.restapi.org/students/morgan/send-sms?text=hello
+```
 1은 sms 문자를 보내는 컨트롤러 리소스 URI다.
 2는 ‘hello’라는 sms 문자를 보내는 컨트롤러 리소스 URI다.
-URI 쿼리 구성요소는 파라미터들로 되어 있고, 이 파라미터는 경로의 구성요소에 의해 계층적으로 식별된 리소스의 변형이나 파생으로 해석될 수 있다. 따라서 리소 스 ➊과 ➋는 정확히 같지는 않지만, 서로 매우 밀접하게 연관되어 있다.
-쿼리 구성요소는 클라이언트에 검색이나 필터링 같은 추가적인 상호작용 능력을 제공한다. 그러나 URI의 다른 구성요소와는 달리, 쿼리 부분은 REST API 클라이 언트에 반드시 필요한 것은 아니다.
-리소스 URI 전체는 HTTP 캐시와 같은 네트워크 기반의 중개자에게 아무런 의미 도 없어야 한다(쿼리 자체도 캐시 가능해야 한다는 의미다). URI의 쿼리 유무에 따 라 캐시의 작용이나 기능이 바뀌어서는 안 된다. 특히 요청 URI에 쿼리가 있다고 해서 응답 메시지가 캐시에서 제외되어서는 안 된다. 4장에서 자세히 다루겠지만, 쿼리가 아닌 HTTP 헤더가 캐시의 중간 역할을 결정해야 한다.
-2장 URI 식별자 설계 24
-#### URI 쿼리 부분으로 컬렉션이나 스토어를 필터링할 수 있다
-URI 쿼리는 컬렉션이나 스토어의 검색 기준으로 사용하기에 적합하다. 다음 예를 보자.
-GET /users
-GET /users?role=admin
 
-#### URI 쿼리는 컬렉션이나 스토어의 결과를 페이지로 구분하여 나타내는 데 사용해야 한다
-REST API 클라이언트는 쿼리 구성요소를 사용하여 컬렉션이나 스토어의 결과 를 pageSize, pageStartIndex 같은 파라미터 값으로 페이지화한다. pageSize 파라미터는 응답에 반환되는 엘리먼트의 최댓값을 나타내는 데 사용된다. 그리고 pageStartIndex 파라미터는 응답에 반환되는 첫 번째 엘리먼트의 인덱스를 나타 낸다. 예를 들어 다음과 같다.
-GET /users?pageSize=25&pageStartIndex=50 (50페이지부터 최대 75페이지까지만)
-URI 쿼리로 클라이언트의 페이지나 필터링의 요구 사항에 대응할 수 없다면, 컬렉 션이나 스토어의 파트너가 될 수 있는 특별한 컨트롤러를 생각해봐야 한다. 예를 들어, 다음 컨트롤러는 URI 쿼리 파트 대신 리퀘스트의 바디 부분에 좀 더 복잡한 입력을 받을 수 있다.
-POST /users/search
+URI 쿼리 구성요소는 파라미터들로 되어 있고, 이 파라미터는 경로의 구성요소에 의해 계층적으로 식별된 리소스의 변형이나 파생으로 해석될 수 있다.
+따라서 리소스 1과 2는 정확히 같지는 않지만, 서로 매우 밀접하게 연관되어 있다.
+
+쿼리 구성요소는 클라이언트에 검색이나 필터링 같은 추가적인 상호작용 능력을 제공한다. 그러나 URI의 다른 구성요소와는 달리, 쿼리 부분은 REST API 클라이 언트에 반드시 필요한 것은 아니다.
+**리소스 URI 전체는 HTTP 캐시와 같은 네트워크 기반의 중개자에게 아무런 의미도 없어야 한다**(쿼리 자체도 캐시 가능해야 한다는 의미다). URI의 쿼리 유무에 따 라 캐시의 작용이나 기능이 바뀌어서는 안 된다. 특히 요청 URI에 쿼리가 있다고 해서 응답 메시지가 캐시에서 제외 되어서는 안 된다.
+
+URI 쿼리 부분으로 컬렉션이나 스토어를 필터링할 수 있다
+URI 쿼리는 컬렉션이나 스토어의 검색 기준으로 사용하기에 적합하다.
+
+URI 쿼리는 컬렉션이나 스토어의 결과를 페이지로 구분하여 나타내는 데 사용해야 한다.
+
+REST API 클라이언트는 쿼리 구성요소를 사용하여 컬렉션이나 스토어의 결과 를 pageSize, pageStartIndex 같은 파라미터 값으로 페이지화한다.
+
+pageSize 파라미터는 응답에 반환되는 엘리먼트의 최댓값을 나타내는 데 사용된다. 그리고 pageStartIndex 파라미터는 응답에 반환되는 첫 번째 엘리먼트의 인덱스를 나타 낸다. 
+
+`GET /users?pageSize=25&pageStartIndex=50 (50페이지부터 최대 75페이지까지만)`
+
+URI 쿼리로 클라이언트의 페이지나 필터링의 요구 사항에 대응할 수 없다면, 컬렉 션이나 스토어의 파트너가 될 수 있는 특별한 컨트롤러를 생각해봐야 한다.
+
+예를 들어, 다음 컨트롤러는 URI 쿼리 파트 대신 리퀘스트의 바디 부분에 좀 더 복잡한 입력을 받을 수 있다.
+`POST /users/search`
